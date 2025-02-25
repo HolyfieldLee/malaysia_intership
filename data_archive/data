@@ -1,0 +1,81 @@
+import pandas as pd
+import plotly.express as px
+
+df = pd.read_excel('/content/CSD - Resource Room.xlsx')
+print(df.head())
+
+#캠퍼스, 워크숍, NNN 드랍 후 공백 N으로 채움, capacity N인 경우 20으로 채움
+Resource_Room = pd.DataFrame(df)
+Resource_Room = Resource_Room.drop(labels='Campus', axis=1)
+Resource_Room = Resource_Room.drop(labels='Workshop', axis=1)
+Resource_Room = Resource_Room[~(Resource_Room[['Lecture', 'Tutorial', 'Lab']].eq('N').all(axis=1))]
+Resource_Room = Resource_Room.fillna('N')
+Resource_Room['Capacity'] = Resource_Room['Capacity'].replace('N', '20')
+Resource_Room = Resource_Room.drop(Resource_Room[Resource_Room['Capacity'] == 0].index)
+
+#조건에 따라 Gerneral한 경우로 분류
+conditions = [
+    ['Y', 'Y', 'Y']
+]
+columns_to_check = ['Lecture', 'Tutorial', 'Lab']
+General = Resource_Room[Resource_Room[columns_to_check].apply(tuple, axis=1).isin(map(tuple, conditions))]
+General.info()
+
+#Gerneral하지 않은 경우를 뺀 나머지 데이터프레임 생성
+conditions_to_exclude = [
+    ['Y', 'Y', 'N'],
+    ['N', 'Y', 'Y']
+]
+columns_to_check = ['Lecture', 'Tutorial', 'Lab']
+
+#G_Resource_Room = Resource_Room[~Resource_Room[columns_to_check].apply(lambda row: tuple(row) in conditions_to_exclude, axis=1)]
+#G_Resource_Room.info()
+
+etc_Room = Resource_Room[~Resource_Room[columns_to_check].apply(tuple, axis=1).isin(map(tuple, conditions))]
+etc_Room.info()
+
+#G_Resource_Room_IMus = G_Resource_Room[G_Resource_Room['Description'].str.contains('IMus', na=False) | G_Resource_Room['Resource Code'].str.contains('IMus', na=False)]
+Kitchen = etc_Room[etc_Room.apply(lambda row: row.astype(str).str.contains('Kitchen', regex=False).any(), axis=1)]
+Design = etc_Room[etc_Room['Description'].str.contains('DESIGN', case=False, na=False)]
+df_combined = pd.concat([Kitchen, Design])
+LL = etc_Room[~etc_Room.apply(tuple, axis=1).isin(df_combined.apply(tuple, axis=1))]
+
+#조건에 따라 Gerneral한 경우로 분류
+conditions = [
+    ['N', 'N', 'Y']
+]
+columns_to_check = ['Lecture', 'Tutorial', 'Lab']
+Lab = LL[LL[columns_to_check].apply(tuple, axis=1).isin(map(tuple, conditions)) & ~LL.apply(tuple, axis=1).isin(df_combined.apply(tuple, axis=1))]
+Lab.info()
+
+#조건에 따라 Gerneral한 경우로 분류
+conditions = [
+    ['Y', 'N', 'N']
+]
+columns_to_check = ['Lecture', 'Tutorial', 'Lab']
+Lecture = LL[LL[columns_to_check].apply(tuple, axis=1).isin(map(tuple, conditions)) & ~LL.apply(tuple, axis=1).isin(df_combined.apply(tuple, axis=1))]
+Lecture
+
+df_combined = pd.concat([Lab, Lecture])
+ETC = LL[~LL.apply(tuple, 1).isin(df_combined.apply(tuple, 1))]
+ETC
+
+import pandas as pd
+
+# 각 데이터프레임에 'Type' 열 추가 (출처 정보)
+General['Type'] = 'General'
+Lab['Type'] = 'Lab'
+Kitchen['Type'] = 'Kitchen'
+Design['Type'] = 'Art'
+Lecture['Type'] = 'Lecture'
+ETC['Type'] = 'Etc'
+
+df_final = pd.concat([General, etc_Room, Kitchen, Design, Lab, Lecture], ignore_index=True)
+df_final = df_final.drop_duplicates(keep='first')
+
+
+# 엑셀 파일로 저장 (index 제거)
+df_final.to_excel("data_tq.xlsx", index=False)
+
+print("엑셀 파일 저장 완료!")
+
