@@ -1,15 +1,52 @@
+#version: '3.8'
+#services:
+#  db:
+#    image: postgres
+#    environment:
+#      POSTGRES_DB: project_db
+#      POSTGRES_USER: postgres
+#      POSTGRES_PASSWORD: your_password
+#    ports:
+#      - "5432:5432"
+#    volumes:
+#      - pgdata:/var/lib/postgresql/data
+#
+#volumes:
+#  pgdata:
+
 version: '3.8'
 services:
   db:
     image: postgres
     environment:
       POSTGRES_DB: project_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: your_password
+      POSTGRES_USER: malaysia_user
+      POSTGRES_PASSWORD: malaysia_pass
     ports:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
 
+  django:
+    build: .
+    container_name: malaysia_django
+    restart: always
+    depends_on:
+      - db
+    environment:
+      DB_NAME: project_db
+      DB_USER: malaysia_user
+      DB_PASSWORD: malaysia_pass
+      DB_HOST: db
+      DB_PORT: 5432
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+
 volumes:
   pgdata:
+
