@@ -1,0 +1,85 @@
+/* 📌 타임테이블 전체 컨테이너 */
+.timetable-container {
+    background-color: white;  /* 배경색을 흰색으로 설정 */
+    width: 90%;  /* 전체 화면의 90% 너비 */
+    max-width: 1800px;  /* 최대 너비를 1800px로 제한 */
+    padding: 20px;  /* 내부 여백 추가 */
+    border-radius: 5px;  /* 테두리 둥글게 만들기 */
+
+    /* 📌 정확한 가운데 정렬 */
+    display: flex;
+    justify-content: center;  /* 가로축 중앙 정렬 */
+    align-items: center;  /* 세로축 중앙 정렬 */
+    margin: 0 auto;  /* 좌우 마진 자동 조정하여 중앙 배치 */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);  /* 살짝 그림자 효과 추가 */
+
+    /* 📌 크기 축소 (비율 유지) */
+    transform: scale(0.75) translateY(-190px); /* 80% 크기로 줄이고 위로 50px 이동 */
+    transform-origin: center; /* 중앙을 기준으로 변형 적용 */
+}
+/* 📌 타임테이블 스타일 */
+.timetable {
+    width: 100%;  /* 테이블이 부모 컨테이너의 100% 차지 */
+    border-collapse: collapse;  /* 테이블의 셀 경계를 합쳐 깔끔하게 만들기 */
+    text-align: center;  /* 텍스트 중앙 정렬 */
+    font-size: 18px;  /* 글자 크기 */
+}
+
+/* 📌 테이블 헤더와 셀 기본 스타일 */
+.timetable th, .timetable td {
+    padding: 15px;  /* 셀 내부 여백 추가 */
+}
+
+/* 📌 요일의 첫 번째 행 스타일 (가장 위쪽) */
+.timetable .first {
+    border-top: 3px solid black;
+}
+
+/* 📌 요일의 마지막 행 스타일 (가장 아래쪽) */
+.timetable .last {
+    border-bottom: 3px solid black;
+}
+
+/* 📌 마지막 열(오른쪽 끝) 스타일 */
+.timetable td:last-child {
+    border-right: 3px solid black; /    * 마지막 열에 오른쪽 테두리 추가 */
+}
+
+/* 📌 테이블 헤더 스타일 */
+.timetable th {
+    background-color: #333;  /* 헤더 배경색 검정 */
+    color: white;  /* 헤더 글씨색 흰색 */
+    border-left: 2px solid black;  /* 헤더 왼쪽 테두리 추가 */
+    border-right: 2px solid black;  /* 헤더 오른쪽 테두리 추가 */
+}
+
+/* 📌 요일(첫 번째 열) 스타일 */
+.day {
+    font-weight: bold;  /* 글자 굵게 */
+    border-right: 2px solid black;  /* 요일 오른쪽 테두리 유지 */
+    background-color: #333;  /* 요일 배경색 검정 */
+    color: white;  /* 요일 글씨색 흰색 */
+    vertical-align: middle;  /* 텍스트 중앙 정렬 */
+}
+
+/* 📌 단과대 선택 드롭다운 컨테이너 */
+.faculty-select-container {
+    display: flex;
+    justify-content: center; /* 가로축 중앙 정렬 */
+    align-items: center; /* 세로축 중앙 정렬 */
+    margin-bottom: 20px; /* 드롭다운과 테이블 사이 간격 */
+    width: 100%; /* 부모 컨테이너 전체 너비 사용 */
+}
+
+/* 📌 단과대 선택 드롭다운 스타일 */
+.faculty-label {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.faculty-select {
+    padding: 8px;
+    font-size: 10px;
+    border: 2px solid #333;
+    border-radius: 5px;
+}
